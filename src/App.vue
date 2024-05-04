@@ -1,5 +1,4 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
 import Main from './components/Main.vue'
 </script>
 
@@ -15,5 +14,4 @@ import Main from './components/Main.vue'
 
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
