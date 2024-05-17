@@ -152,8 +152,34 @@ issues: reason if value is not valid otherwise empty'},...]"`
       `http://${import.meta.env.VITE_FHIR_API}/fhir/Medication/$validate`,
       medicationObj
     )
+
     if (response.status === 200) {
-      console.log(response)
+      if (response.data['issue']) {
+        let errorDescriptions = response.data['issue']
+          .filter((o) => o.severity === 'error')
+          .map((o) => o.diagnostics)
+        if (errorDescriptions && errorDescriptions.length) {
+          let requestForCorrectionPrompt = `The resource with code text of ${medicationObj.code.text} is invalid due to the following issues: ${errorDescriptions.join(', ')} \
+        correct the issues and return a valid resource in the same json format and structure specified before`
+
+          await openai.chat.completions.create({
+            messages: [
+              {
+                role: 'system',
+                content: requestForCorrectionPrompt
+              }
+            ],
+            model: 'gpt-3.5-turbo',
+            response_format: { type: 'json_object' }
+          })
+
+          let revalidatedMedications = JSON.parse(completion.choices[0].message.content).medications
+          let revalidatedAllergies = JSON.parse(completion.choices[0].message.content).allergies
+
+          console.log(revalidatedMedications)
+          console.log(revalidatedAllergies)
+        }
+      }
     } else {
       console.log('error')
     }
