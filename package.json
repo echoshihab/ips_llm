@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.9.0",
+    "axios": "^1.6.8",
     "openai": "^4.40.2",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
